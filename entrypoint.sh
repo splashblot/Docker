@@ -120,7 +120,10 @@ initialize_system() {
   PHP_MAX_CHILDREN=${PHP_MAX_CHILDREN:-5}
 
   # configure env file
-  if [[ "${APP_KEY}" == null ]]; then
+  if [[ -s '/run/secrets/CACHET_APP_KEY' ]]
+  then
+    APP_KEY=`cat /run/secrets/CACHET_APP_KEY`
+  elif [[ "${APP_KEY}" == null ]]; then
     keygen="$(sudo php artisan key:generate)"
     echo "${keygen}"
     appkey=$(echo ${keygen} | grep -oP '(?<=\[).*(?=\])')
